@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import chipdip from './chipdip.js';
 import db from './db.js';
 import template from './template.js';
+import productV2 from './src/server/routes/product_v2.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
