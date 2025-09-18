@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components Aggregator - Поиск электронных компонентов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'salient': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe', 
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Original text animation from loads - FIXED ALIGNMENT */
+        .dropping-texts {
+            display: inline-block;
+            width: 220px;
+            text-align: left;
+            height: 1em;
+            vertical-align: baseline;
+            position: relative;
+        }
+
+        .dropping-texts > div {
+            font-size: 0px;
+            opacity: 0;
+            margin-left: -30px;
+            position: absolute;
+            font-weight: 400;
+            color: #3b82f6;
+            line-height: 1;
+            top: 0;
+            left: 0;
+        }
+
+        .dropping-texts > div:nth-child(1) {
+            animation: roll 6.5s linear infinite 0s;
+        }
+        .dropping-texts > div:nth-child(2) {
+            animation: roll 6.5s linear infinite 1.3s;
+        }
+        .dropping-texts > div:nth-child(3) {
+            animation: roll 6.5s linear infinite 2.6s;
+        }
+        .dropping-texts > div:nth-child(4) {
+            animation: roll2 6.5s linear infinite 3.9s;
+        }
+
+        @keyframes roll {
+            0% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(-25deg);
+            }
+            3% {
+                opacity: 1;
+                transform: rotate(0deg);
+            }
+            5% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+            }
+            20% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+                transform: rotate(0deg);
+            }
+            27% {
+                font-size: 0px;
+                opacity: 0.5;
+                margin-left: 20px;
+                margin-top: 0px;
+            }
+            100% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(15deg);
+            }
+        }
+
+        @keyframes roll2 {
+            0% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(-25deg);
+            }
+            3% {
+                opacity: 1;
+                transform: rotate(0deg);
+            }
+            5% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+            }
+            30% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+                transform: rotate(0deg);
+            }
+            37% {
+                font-size: 200px;
+                opacity: 0;
+                margin-left: -100px;
+                margin-top: -80px;
+            }
+            100% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(15deg);
+            }
+        }
+
+        /* Original search box animation */
+        .search-box {
+            font-size: 20px;
+            border: solid 0.15em #3b82f6;
+            display: inline-block;
+            position: relative;
+            border-radius: 2.5em;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-box input[type=text] {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            width: 2.5em;
+            height: 2.5em;
+            padding: 0.3em 2.1em 0.3em 0.4em;
+            border: none;
+            box-sizing: border-box;
+            border-radius: 2.5em;
+            background: white;
+            transition: width 800ms cubic-bezier(0.68, -0.55, 0.27, 1.55) 150ms;
+        }
+
+        .search-box input[type=text]:focus {
+            outline: none;
+        }
+
+        .search-box input[type=text]:focus,
+        .search-box input[type=text]:not(:placeholder-shown) {
+            width: 18em;
+            transition: width 800ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .search-box input[type=text]:focus + button[type=submit],
+        .search-box input[type=text]:not(:placeholder-shown) + button[type=submit] {
+            transform: rotate(-45deg) translateY(0);
+            transition: transform 150ms ease-out 800ms;
+        }
+
+        .search-box button[type=submit] {
+            background-color: transparent;
+            width: 1.4em;
+            height: 1.4em;
+            border: 0;
+            padding: 0;
+            outline: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0.55em;
+            right: 0.55em;
+            cursor: pointer;
+            transform: rotate(-45deg) translateY(2.2em);
+            transition: transform 150ms ease-out 150ms;
+        }
+
+        .search-box button[type=submit]:before,
+        .search-box button[type=submit]:after {
+            content: "";
+            background-color: #3b82f6;
+            width: 0.15em;
+            height: 1.4em;
+            position: absolute;
+        }
+
+        .search-box button[type=submit]:after {
+            transform: rotate(90deg);
+        }
+
+        .search-box button[type=submit]:hover:before,
+        .search-box button[type=submit]:hover:after {
+            background-color: #2563eb;
+        }
+
+        /* Micro Chip Animation - ENHANCED */
+        .microchip {
+            animation: microchip-rotate 3s linear infinite;
+        }
+        
+        .microchip__lines {
+            animation: microchip-pulse 1.5s ease-in-out infinite;
+        }
+        
+        .microchip__center {
+            animation: microchip-scale 2s ease-in-out infinite;
+        }
+        
+        .microchip__core {
+            animation: microchip-glow 1s ease-in-out infinite;
+        }
+        
+        @keyframes microchip-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes microchip-pulse {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 0.6; 
+            }
+            50% { 
+                transform: scale(1.2); 
+                opacity: 1; 
+            }
+        }
+        
+        @keyframes microchip-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        
+        @keyframes microchip-glow {
+            0%, 100% { 
+                fill: #3b82f6; 
+                filter: drop-shadow(0 0 5px #3b82f6);
+            }
+            50% { 
+                fill: #1d4ed8; 
+                filter: drop-shadow(0 0 15px #1d4ed8);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dropping-texts {
+                width: 180px;
+                height: 0.9em;
+            }
+            
+            .search-box {
+                font-size: 16px;
+            }
+            
+            .search-box input[type=text]:focus,
+            .search-box input[type=text]:not(:placeholder-shown) {
+                width: 14em;
+            }
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-50 via-white to-indigo-100 overflow-x-hidden">
+    <!-- Header -->
+    <header class="fixed inset-x-0 top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100">
+        <nav class="flex items-center justify-between p-6 lg:px-8 max-w-7xl mx-auto" aria-label="Global">
+            <div class="flex lg:flex-1">
+                <a href="/" class="-m-1.5 p-1.5">
+                    <span class="text-xl font-bold text-blue-600">Components Aggregator</span>
+                </a>
+            </div>
+            <div class="hidden lg:flex lg:gap-x-12">
+                <div class="text-sm text-gray-600 space-x-6">
+                    <span>📍 Москва, ул. Примерная, 123</span>
+                    <span>📞 +7 (495) 123-45-67</span>
+                </div>
+            </div>
+            <div class="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-6">
+                <a href="/about" class="text-sm font-semibold leading-6 text-gray-900 hover:text-blue-600 transition-colors">О нас</a>
+                <a href="/delivery" class="text-sm font-semibold leading-6 text-gray-900 hover:text-blue-600 transition-colors">Доставка</a>
+                <a href="/contacts" class="text-sm font-semibold leading-6 text-gray-900 hover:text-blue-600 transition-colors">Контакты</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="relative isolate pt-24">
+        <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
+            <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+        </div>
+        
+        <div class="mx-auto max-w-4xl px-6 py-32 sm:py-48 lg:px-8">
+            <div class="text-center">
+                <!-- Text Animation -->
+                <h1 class="text-4xl font-light tracking-tight text-gray-900 sm:text-6xl mb-8">
+                    Найдите свой 
+                    <div class="dropping-texts">
+                        <div>транзистор</div>
+                        <div>резистор</div>
+                        <div>диод</div>
+                        <div>микрочип</div>
+                    </div>
+                </h1>
+                
+                <p class="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
+                    Поиск электронных компонентов по всем поставщикам. Сравнивайте цены, проверяйте наличие, находите лучшие предложения.
+                </p>
+                
+                <!-- Search Box -->
+                <div class="mt-8 flex justify-center">
+                    <form class="search-box" id="searchForm">
+                        <input type="text" placeholder="Введите артикул..." id="searchInput" autocomplete="off">
+                        <button type="submit"></button>
+                    </form>
+                </div>
+                
+                <!-- Loading with Micro Chip Animation -->
+                <div class="mt-6 hidden" id="loadingContainer">
+                    <div class="flex flex-col justify-center items-center space-y-4">
+                        <div class="w-16 h-16 text-blue-600">
+                            <svg class="w-full h-full" viewBox="0 0 128 128" role="img" aria-label="Microchip loading animation">
+                                <g transform="translate(10,10)">
+                                    <g class="microchip__lines" stroke-linecap="round" stroke-linejoin="round">
+                                        <g>
+                                            <g fill="none" stroke="currentcolor">
+                                                <polyline points="12 54,12 46,3 46,3 38" stroke-dasharray="42 42" />
+                                                <polyline points="29 54,3 54" stroke-dasharray="42 42" />
+                                                <polyline points="12 54,12 62,3 62,3 70" stroke-dasharray="42 42" />
+                                            </g>
+                                            <g fill="currentcolor">
+                                                <circle r="3" cx="3" cy="38" />
+                                                <circle r="3" cx="3" cy="54" />
+                                                <circle r="3" cx="3" cy="70" />
+                                            </g>
+                                        </g>
+                                    </g>
+                                    <g transform="translate(29,29)">
+                                        <g class="microchip__center">
+                                            <g fill="none" stroke="currentcolor" stroke-width="6">
+                                                <rect x="3" y="3" rx="2.5" ry="2.5" width="44" height="44" />
+                                            </g>
+                                            <rect class="microchip__core" fill="currentcolor" rx="5" ry="5" width="50" height="50" />
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <span class="text-gray-600 text-sm">Поиск компонентов...</span>
+                    </div>
+                </div>
+                
+                <!-- Error Message -->
+                <div class="mt-6 hidden" id="errorMessage">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 max-w-md mx-auto">
+                        <p class="text-red-800 text-sm font-medium" id="errorText"></p>
+                    </div>
+                </div>
+                
+                <!-- Search Examples -->
+                <div class="mt-2 text-sm text-gray-500">
+                    <strong class="text-gray-700">Примеры поиска:</strong> 
+                    LM317, STM32F103, 2N2222, резистор, конденсатор, LDD-700L
+                </div>
+                
+                <!-- Features Grid -->
+                <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:gap-8">
+                    <div class="group relative bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-200">
+                        <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mb-4 mx-auto group-hover:bg-blue-200 transition-colors">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Быстрый поиск</h3>
+                        <p class="text-gray-600">Находим компоненты по артикулу или названию за секунды</p>
+                    </div>
+                    
+                    <div class="group relative bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-200">
+                        <div class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-4 mx-auto group-hover:bg-green-200 transition-colors">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Сравнение цен</h3>
+                        <p class="text-gray-600">Сравниваем предложения от разных поставщиков</p>
+                    </div>
+                    
+                    <div class="group relative bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-200">
+                        <div class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg mb-4 mx-auto group-hover:bg-purple-200 transition-colors">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Актуальные остатки</h3>
+                        <p class="text-gray-600">Проверяем наличие товаров в режиме реального времени</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
+            <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-32 sm:mt-40">
+        <div class="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8">
+            <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+                <div class="space-y-8">
+                    <div class="text-xl font-bold text-blue-600">Components Aggregator</div>
+                    <p class="text-sm leading-6 text-gray-600">
+                        Поиск электронных компонентов по лучшим ценам от проверенных поставщиков.
+                    </p>
+                </div>
+                <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+                    <div class="md:grid md:grid-cols-2 md:gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">Компания</h3>
+                            <ul role="list" class="mt-6 space-y-4">
+                                <li><a href="/about" class="text-sm leading-6 text-gray-600 hover:text-gray-900">О нас</a></li>
+                                <li><a href="/contacts" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Контакты</a></li>
+                            </ul>
+                        </div>
+                        <div class="mt-10 md:mt-0">
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">Покупателям</h3>
+                            <ul role="list" class="mt-6 space-y-4">
+                                <li><a href="/delivery" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Доставка</a></li>
+                                <li><a href="/help" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Помощь</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="md:grid md:grid-cols-1 md:gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">Контакты</h3>
+                            <div class="mt-6 space-y-4 text-sm text-gray-600">
+                                <p>📍 Москва, ул. Примерная, 123</p>
+                                <p>📞 +7 (495) 123-45-67</p>
+                                <p>✉️ info@components.ru</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs leading-5 text-gray-500">&copy; 2025 Components Aggregator. Все права защищены.</p>
+                    <a href="/privacy" class="text-xs leading-5 text-gray-500 hover:text-gray-900">Политика конфиденциальности</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        // Обработчик формы
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                console.log('🔍 Поиск:', query);
+                searchProducts(query);
+            }
+        });
+
+        async function searchProducts(query) {
+            try {
+                if (!query || query.length < 2) {
+                    throw new Error('Введите минимум 2 символа для поиска');
+                }
+
+                showLoading(true);
+                hideError();
+
+                console.log(`🔍 Начинаем поиск: "${query}"`);
+
+                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log(`📡 Ответ сервера: ${response.status} ${response.statusText}`);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Ошибка ответа:', errorText);
+                    throw new Error(`Ошибка сервера: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('📦 Получены данные:', data);
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                if (!data.results || !Array.isArray(data.results)) {
+                    console.error('Неправильный формат данных:', data);
+                    throw new Error('Некорректный формат данных от сервера');
+                }
+
+                if (data.results.length === 0) {
+                    showError('По вашему запросу ничего не найдено. Попробуйте другой артикул или ключевое слово');
+                    return;
+                }
+
+                console.log(`✅ Найдено товаров: ${data.results.length}`);
+
+                // Если найден только один товар - сразу переходим на его карточку
+                if (data.results.length === 1) {
+                    console.log('🎯 Переходим на карточку единственного товара');
+                    // Плавный переход
+                    document.body.style.transition = 'opacity 0.3s ease';
+                    document.body.style.opacity = '0.7';
+                    setTimeout(() => {
+                        window.location.href = `/product?url=${encodeURIComponent(data.results[0].url)}`;
+                    }, 200);
+                    return;
+                }
+
+                // Если несколько товаров - переходим на страницу результатов
+                console.log('📋 Переходим на страницу результатов');
+                document.body.style.transition = 'opacity 0.3s ease';
+                document.body.style.opacity = '0.7';
+                setTimeout(() => {
+                    window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+                }, 200);
+
+            } catch (err) {
+                console.error('❌ Ошибка поиска:', err);
+                showError(err.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            if (show) {
+                loadingContainer.classList.remove('hidden');
+                console.log('🔄 Показываем лоадер');
+            } else {
+                loadingContainer.classList.add('hidden');
+                console.log('✅ Скрываем лоадер');
+            }
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            console.log('❌ Показываем ошибку:', message);
+            setTimeout(() => {
+                errorMessage.classList.add('hidden');
+            }, 5000);
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+
+        // Автоматический поиск при наличии параметра q в URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialQuery = urlParams.get('q');
+        if (initialQuery) {
+            searchInput.value = initialQuery;
+            console.log('🔗 Поиск из URL:', initialQuery);
+            searchProducts(initialQuery);
+        }
+
+        // Фокус на поле поиска при загрузке
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                searchInput.focus();
+            }, 500);
+        });
+
+        console.log('🚀 Tailwind дизайн загружен');
+    </script>
+</body>
+</html>

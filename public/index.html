@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">      
+    <title>Components Aggregator - Поиск электронных компонентов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007AFF;
+            --primary-hover: #0051D5;
+            --secondary-color: #34C759;
+            --background-color: #FFFFFF;
+            --surface-color: #F2F2F7;
+            --text-primary: #000000;
+            --text-secondary: #8E8E93;
+            --text-tertiary: #C7C7CC;
+            --border-color: #E5E5EA;
+            --error-color: #FF3B30;
+            --warning-color: #FF9500;
+            --shadow-light: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
+            --shadow-heavy: 0 8px 25px rgba(0,0,0,0.15);
+            --radius-small: 8px;
+            --radius-medium: 12px;
+            --radius-large: 16px;
+            --header-height: 64px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 32px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .header-nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s ease;
+        }
+
+        .header-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+        }
+
+        .hero-section {
+            text-align: center;
+            max-width: 640px;
+            width: 100%;
+        }
+
+        /* Text Animation Integration */
+        .hero-title {
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .dropping-texts {
+            display: inline-block;
+            width: 220px;
+            text-align: left;
+            height: 48px;
+            vertical-align: -2px;
+        }
+
+        .dropping-texts > div {
+            font-size: 0px;
+            opacity: 0;
+            margin-left: -30px;
+            position: absolute;
+            font-weight: 400;
+            color: var(--primary-color);
+        }
+
+        .dropping-texts > div:nth-child(1) {
+            animation: roll 6.5s linear infinite 0s;
+        }
+        .dropping-texts > div:nth-child(2) {
+            animation: roll 6.5s linear infinite 1.3s;
+        }
+        .dropping-texts > div:nth-child(3) {
+            animation: roll 6.5s linear infinite 2.6s;
+        }
+        .dropping-texts > div:nth-child(4) {
+            animation: roll2 6.5s linear infinite 3.9s;
+        }
+
+        @keyframes roll {
+            0% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(-25deg);
+            }
+            3% {
+                opacity: 1;
+                transform: rotate(0deg);
+            }
+            5% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+            }
+            20% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+                transform: rotate(0deg);
+            }
+            27% {
+                font-size: 0px;
+                opacity: 0.5;
+                margin-left: 20px;
+                margin-top: 60px;
+            }
+            100% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(15deg);
+            }
+        }
+
+        @keyframes roll2 {
+            0% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(-25deg);
+            }
+            3% {
+                opacity: 1;
+                transform: rotate(0deg);
+            }
+            5% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+            }
+            30% {
+                font-size: inherit;
+                opacity: 1;
+                margin-left: 0px;
+                margin-top: 0px;
+                transform: rotate(0deg);
+            }
+            37% {
+                font-size: 200px;
+                opacity: 0;
+                margin-left: -100px;
+                margin-top: -80px;
+            }
+            100% {
+                font-size: 0px;
+                opacity: 0;
+                margin-left: -30px;
+                margin-top: 0px;
+                transform: rotate(15deg);
+            }
+        }
+
+        /* Modern Search */
+        .search-container {
+            margin-top: 48px;
+            margin-bottom: 32px;
+        }
+
+        .search-form {
+            position: relative;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 56px;
+            padding: 0 24px 0 56px;
+            font-size: 17px;
+            font-weight: 400;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-large);
+            background: var(--background-color);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .search-button {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: var(--radius-small);
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .search-button:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        .search-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            margin-top: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .loading-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 15px;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .search-examples {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 24px;
+            line-height: 1.5;
+        }
+
+        .search-examples strong {
+            color: var(--text-primary);
+        }
+
+        /* Error Messages */
+        .error-message {
+            max-width: 480px;
+            margin: 24px auto;
+            padding: 16px 20px;
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            border-radius: var(--radius-medium);
+            color: var(--error-color);
+            font-size: 15px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 120px;
+            padding: 48px 24px 32px;
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+        }
+
+        .footer-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .footer-section p,
+        .footer-section a {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 16px;
+            }
+
+            .header-info {
+                display: none;
+            }
+
+            .header-nav {
+                gap: 16px;
+            }
+
+            .main-content {
+                padding: 0 16px;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .dropping-texts {
+                width: 160px;
+                height: 32px;
+            }
+
+            .search-form {
+                max-width: 100%;
+            }
+
+            .search-input {
+                height: 48px;
+                font-size: 16px;
+                padding: 0 20px 0 48px;
+            }
+
+            .search-icon {
+                left: 16px;
+                width: 18px;
+                height: 18px;
+            }
+
+            .search-button {
+                width: 32px;
+                height: 32px;
+            }
+
+            .footer {
+                margin-top: 80px;
+                padding: 32px 16px 24px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .dropping-texts {
+                width: 140px;
+            }
+        }
+
+        .search-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-stock {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .product-manufacturer {
+            color: var(--dark-grey);
+            font-size: 0.9rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        /* Микрочип лоадер */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            font-weight: 600;
+        }
+
+        .microchip {
+            width: 120px;
+            height: 120px;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
+        }
+
+        .microchip__center, .microchip__dot, .microchip__line, .microchip__lines, .microchip__spark, .microchip__wave {
+            animation-duration: 2s;
+            animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+            animation-iteration-count: infinite;
+        }
+
+        .microchip__core, .microchip__dot {
+            fill: #FFFFFF;
+        }
+
+        .microchip__center, .microchip__wave {
+            transform-origin: 25px 25px;
+        }
+
+        .microchip__center {
+            animation-name: center-scale;
+        }
+
+        .microchip__line, .microchip__spark, .microchip__wave {
+            stroke: #FFFFFF;
+        }
+
+        @keyframes center-scale {
+            from, to {
+                transform: scale(0);
+            }
+            12.5%, 75% {
+                transform: scale(1);
+            }
+        }
+
+        .error {
+            text-align: center;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--error-color);
+            border-radius: 15px;
+            color: var(--error-color);
+            display: none;
+            font-weight: 600;
+            max-width: 500px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            color: var(--dark-grey);
+            border: 2px dashed rgba(255,255,255,0.3);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .search-box {
+                font-size: 20px;
+            }
+
+            .search-box input[type=text]:focus,
+            .search-box input[type=text]:not(:placeholder-shown) {
+                width: 15em;
+            }
+
+            .search-results {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Анимации появления результатов */
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">Components Aggregator</a>
+            
+            <div class="header-info">
+                <span>📍 Москва, ул. Примерная, 123</span>
+                <span>📞 +7 (495) 123-45-67</span>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="/about">О нас</a>
+                <a href="/delivery">Доставка</a>
+                <a href="/contacts">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="hero-section">
+            <!-- Text Animation -->
+            <div class="hero-title">
+                Найдите свой 
+                <div class="dropping-texts">
+                    <div>транзистор</div>
+                    <div>резистор</div>
+                    <div>диод</div>
+                    <div>микрочип</div>
+                </div>
+            </div>
+
+            <!-- Modern Search -->
+            <div class="search-container">
+                <form class="search-form" id="searchForm">
+                    <svg class="search-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                    </svg>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput"
+                        placeholder="Введите артикул или название компонента..."
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="search-button">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-container" id="loadingContainer">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Поиск компонентов...</div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Search Examples -->
+            <div class="search-examples">
+                <strong>Примеры поиска:</strong> LM317, STM32F103, 2N2222, резистор, конденсатор, LDD-700L
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Компания</h3>
+                <a href="/about">О нас</a>
+                <a href="/contacts">Контакты</a>
+                <a href="/careers">Вакансии</a>
+            </div>
+            <div class="footer-section">
+                <h3>Покупателям</h3>
+                <a href="/delivery">Доставка и оплата</a>
+                <a href="/returns">Возврат товара</a>
+                <a href="/warranty">Гарантия</a>
+            </div>
+            <div class="footer-section">
+                <h3>Поддержка</h3>
+                <a href="/help">Помощь</a>
+                <a href="/faq">Вопросы и ответы</a>
+                <a href="/feedback">Обратная связь</a>
+            </div>
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <p>📍 Москва, ул. Примерная, 123</p>
+                <p>📞 +7 (495) 123-45-67</p>
+                <p>✉️ info@components.ru</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Components Aggregator. Все права защищены. | 
+            <a href="/privacy" style="color: inherit;">Политика конфиденциальности</a></p>
+        </div>
+    </footer>
+
+    <!-- Лоадер -->
+    <div class="loading" id="loading">
+        <svg class="microchip" viewBox="0 0 128 128" width="128px" height="128px">
+            <symbol id="dot-1">
+                <circle r="3" cx="3" cy="38" />
+            </symbol>
+            <symbol id="dot-2">
+                <circle r="3" cx="3" cy="54" />
+            </symbol>
+            <symbol id="dot-3">
+                <circle r="3" cx="3" cy="70" />
+            </symbol>
+            <symbol id="wave">
+                <rect x="3" y="3" rx="2.5" ry="2.5" width="44" height="44" />
+            </symbol>
+            <g transform="translate(10,10)">
+                <g class="microchip__lines" stroke-linecap="round" stroke-linejoin="round">
+                    <g fill="currentcolor">
+                        <use class="microchip__dot microchip__dot--1" href="#dot-1" />
+                        <use class="microchip__dot microchip__dot--2" href="#dot-2" />
+                        <use class="microchip__dot microchip__dot--3" href="#dot-3" />
+                    </g>
+                </g>
+                <g transform="translate(29,29)">
+                    <g class="microchip__center">
+                        <g fill="none" stroke="currentcolor" stroke-width="6">
+                            <use class="microchip__wave microchip__wave--1" href="#wave" />
+                        </g>
+                        <rect class="microchip__core" fill="currentcolor" rx="5" ry="5" width="50" height="50" />
+                    </g>
+                </g>
+            </g>
+        </svg>
+        <div class="loading-text">Поиск компонентов...</div>
+    </div>
+
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Обработчик формы
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                console.log('🔍 Поиск:', query);
+                searchProducts(query);
+            }
+        });
+
+        async function searchProducts(query) {
+            try {
+                if (!query || query.length < 2) {
+                    throw new Error('Введите минимум 2 символа для поиска');
+                }
+
+                showLoading(true);
+                hideError();
+
+                console.log(`🔍 Начинаем поиск: "${query}"`);
+
+                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log(`📡 Ответ сервера: ${response.status} ${response.statusText}`);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Ошибка ответа:', errorText);
+                    throw new Error(`Ошибка сервера: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('📦 Получены данные:', data);
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                if (!data.results || !Array.isArray(data.results)) {
+                    console.error('Неправильный формат данных:', data);
+                    throw new Error('Некорректный формат данных от сервера');
+                }
+
+                if (data.results.length === 0) {
+                    showError('По вашему запросу ничего не найдено. Попробуйте другой артикул или ключевое слово');
+                    return;
+                }
+
+                console.log(`✅ Найдено товаров: ${data.results.length}`);
+
+                // Если найден только один товар - сразу переходим на его карточку
+                if (data.results.length === 1) {
+                    console.log('🎯 Переходим на карточку единственного товара');
+                    // Плавный переход
+                    document.body.style.transition = 'opacity 0.3s ease';
+                    document.body.style.opacity = '0.7';
+                    setTimeout(() => {
+                        window.location.href = `/product?url=${encodeURIComponent(data.results[0].url)}`;
+                    }, 200);
+                    return;
+                }
+
+                // Если несколько товаров - переходим на страницу результатов
+                console.log('📋 Переходим на страницу результатов');
+                document.body.style.transition = 'opacity 0.3s ease';
+                document.body.style.opacity = '0.7';
+                setTimeout(() => {
+                    window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+                }, 200);
+
+            } catch (err) {
+                console.error('❌ Ошибка поиска:', err);
+                showError(err.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            if (show) {
+                loadingContainer.classList.add('show');
+                console.log('🔄 Показываем лоадер');
+            } else {
+                loadingContainer.classList.remove('show');
+                console.log('✅ Скрываем лоадер');
+            }
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            console.log('❌ Показываем ошибку:', message);
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        function hideError() {
+            errorMessage.classList.remove('show');
+        }
+
+        // Автоматический поиск при наличии параметра q в URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialQuery = urlParams.get('q');
+        if (initialQuery) {
+            searchInput.value = initialQuery;
+            console.log('🔗 Поиск из URL:', initialQuery);
+            searchProducts(initialQuery);
+        }
+
+        // Фокус на поле поиска при загрузке
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                searchInput.focus();
+            }, 500);
+        });
+
+        console.log('🚀 Новый дизайн загружен');
+    </script>
+</body>
+</html>

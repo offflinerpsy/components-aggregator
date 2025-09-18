@@ -1,0 +1,160 @@
+*** a/audit/bot/runner.js
+--- b/audit/bot/runner.js
+@@
+-import fs from 'fs';
+-import path from 'path';
+-import { fileURLToPath } from 'url';
+-import process from 'process';
++import fs from 'fs';
++import path from 'path';
++import { fileURLToPath } from 'url';
++import process from 'process';
+@@
+ const cfgPath = path.join(__dirname,'config.json');
+ const schemaPath = path.join(__dirname,'schema.json');
++const extraRulesPath = path.join(__dirname,'rules-extra.json'); // <- NEW
+@@
+ const CFG = JSON.parse(fs.readFileSync(cfgPath,'utf8'));
+ const SCHEMA = JSON.parse(fs.readFileSync(schemaPath,'utf8'));
++const EXTRA = fs.existsSync(extraRulesPath)
++  ? JSON.parse(fs.readFileSync(extraRulesPath,'utf8'))
++  : null;
+ fs.mkdirSync(OUTDIR, { recursive: true });
+@@
+ async function fetchRendered(url) {
+   const puppeteer = await import('puppeteer');
+   const browser = await puppeteer.launch({ headless: CFG.HEADLESS !== false, args: ['--no-sandbox'] });
+@@
+   return { status: 200, html };
+ }
+ 
+ // Very light HTML parse (regex + minimal heuristics). Optionally, replace with cheerio if needed.
+ function extractFields(html) {
+   const result = {
+     mpn: null, title: null, manufacturer: null,
+     image: null, images: [], datasheets: [], specs: {}
+   };
+@@
+   return result;
+ }
+ 
++// NEW: apply extra CSS selector rules via cheerio (non-destructive merge)
++async function applyExtraRules(html, data) {
++  if (!EXTRA) return data;
++  const cheerio = (await import('cheerio')).default;
++  const $ = cheerio.load(html);
++
++  const safeText = (x)=> (x||'').trim() || null;
++  const mergeSet = (arr, val)=> {
++    if (!val) return arr;
++    const add = Array.isArray(val) ? val : [val];
++    const s = new Set([...(arr||[]), ...add.filter(Boolean)]);
++    return [...s];
++  };
++
++  // title / mpn / manufacturer
++  if (EXTRA.title?.selector && !data.title) {
++    const el = $(EXTRA.title.selector).first();
++    const t = EXTRA.title.attr ? el.attr(EXTRA.title.attr) : el.text();
++    data.title = safeText(t) || data.title;
++  }
++  if (EXTRA.mpn?.selector && !data.mpn) {
++    const el = $(EXTRA.mpn.selector).first();
++    let t = EXTRA.mpn.attr ? el.attr(EXTRA.mpn.attr) : el.text();
++    t = safeText(t);
++    if (t && EXTRA.mpn.match) {
++      const m = new RegExp(EXTRA.mpn.match, 'i').exec(t);
++      if (m && m[1]) t = m[1];
++    }
++    data.mpn = t || data.mpn;
++  }
++  if (EXTRA.manufacturer?.selector && !data.manufacturer) {
++    const el = $(EXTRA.manufacturer.selector).first();
++    const t = EXTRA.manufacturer.attr ? el.attr(EXTRA.manufacturer.attr) : el.text();
++    data.manufacturer = safeText(t) || data.manufacturer;
++  }
++
++  // images
++  if (EXTRA.images?.selector) {
++    const list = [];
++    $(EXTRA.images.selector).each((_, el)=>{
++      const v = EXTRA.images.attr ? $(el).attr(EXTRA.images.attr) : $(el).text();
++      const u = safeText(v);
++      if (u) list.push(u);
++    });
++    data.images = mergeSet(data.images, list);
++    if (!data.image && data.images.length) data.image = data.images[0];
++  }
++
++  // datasheets (pdf)
++  if (EXTRA.datasheets?.selector) {
++    const list = [];
++    $(EXTRA.datasheets.selector).each((_, el)=>{
++      const v = EXTRA.datasheets.attr ? $(el).attr(EXTRA.datasheets.attr) : $(el).text();
++      const u = safeText(v);
++      if (u && (!EXTRA.datasheets.endsWith || u.toLowerCase().endsWith(EXTRA.datasheets.endsWith))) {
++        list.push(u);
++      }
++    });
++    data.datasheets = mergeSet(data.datasheets, list);
++  }
++
++  // specs: { "Входное напряжение": { selector, attr? } , ... }
++  if (EXTRA.specs && typeof EXTRA.specs === 'object') {
++    for (const [key, rule] of Object.entries(EXTRA.specs)) {
++      if (!rule?.selector) continue;
++      const el = $(rule.selector).first();
++      let v = rule.attr ? el.attr(rule.attr) : el.text();
++      v = safeText(v);
++      if (v && rule.match) {
++        const m = new RegExp(rule.match, 'i').exec(v);
++        if (m && m[1]) v = m[1];
++      }
++      if (v && !data.specs[key]) data.specs[key] = v;
++    }
++  }
++  return data;
++}
++
+ function validate(result) {
+   const errs = [];
+@@
+   return errs;
+ }
+ 
+ async function main(){
+@@
+     try {
+       if (MODE === 'render') {
+         ({ status, html } = await fetchRendered(url));
+       } else {
+         ({ status, html } = await fetchHttp(url));
+         mode = 'http';
+       }
+-      const data = extractFields(html);
++      let data = extractFields(html);
++      data = await applyExtraRules(html, data); // <- NEW
+       const errs = validate(data);
+       const donor = CFG.DONOR_MAP[p] || null; // donor compare stub (later extend)
+       const row = { ts:new Date().toISOString(), url, mode, status, data, errs, donor };
+       stream.write(JSON.stringify(row) + "\n");
+     } catch (e) {
+       const row = { ts:new Date().toISOString(), url, mode, status, error: String(e && e.message || e) };
+       stream.write(JSON.stringify(row) + "\n");
+*** /dev/null
+--- b/audit/bot/rules-extra.json
+@@
++{
++  "//": "Пример. Правки под свой шаблон. Любые поля опциональны; если их нет — бот просто пропускает.",
++  "title": { "selector": "h1.product-title" },
++  "mpn":   { "selector": "[data-mpn], .mpn, .nomenclature", "attr": "data-mpn", "match": "([A-Za-z0-9._-]{3,})" },
++  "manufacturer": { "selector": ".brand, .manufacturer a" },
++  "images": { "selector": ".gallery img, .product-images img", "attr": "src" },
++  "datasheets": { "selector": "a[href$='.pdf']", "attr": "href", "endsWith": ".pdf" },
++  "specs": {
++    "Корпус": { "selector": "tr:has(td:contains('Корпус')) td:nth-child(2)" },
++    "Полярность": { "selector": "tr:has(td:contains('Полярность')) td:nth-child(2)" },
++    "Ток (I)": { "selector": "tr:has(td:contains('Ток')) td:nth-child(2)", "match": "([0-9.,]+\\s*[muµmMkK]A)" },
++    "Напряжение (V)": { "selector": "tr:has(td:contains('Напряжение')) td:nth-child(2)", "match": "([0-9.,]+\\s*[kKmM]?V)" }
++  }
++}

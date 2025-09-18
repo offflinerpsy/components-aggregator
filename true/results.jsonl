@@ -1,0 +1,5 @@
+{"ts":"2025-09-18T18:22:24.017Z","url":"http://89.104.69.77/","mode":"true","status":0,"error":"maxRedirections is not supported, use the redirect interceptor"}
+{"ts":"2025-09-18T18:22:24.124Z","url":"http://89.104.69.77/search.html?q=LM317","mode":"true","status":0,"error":"maxRedirections is not supported, use the redirect interceptor"}
+{"ts":"2025-09-18T18:22:24.231Z","url":"http://89.104.69.77/product?url=https://www.chipdip.ru/product/lm317t","mode":"true","status":0,"error":"maxRedirections is not supported, use the redirect interceptor"}
+{"ts":"2025-09-18T18:22:24.337Z","url":"http://89.104.69.77/api/search?q=LM317","mode":"true","status":0,"error":"maxRedirections is not supported, use the redirect interceptor"}
+{"ts":"2025-09-18T18:22:24.445Z","url":"http://89.104.69.77/api/product?url=https://www.chipdip.ru/product/lm317t","mode":"true","status":0,"error":"maxRedirections is not supported, use the redirect interceptor"}

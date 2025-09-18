@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components Aggregator - Поиск электронных компонентов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                        'display': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'salient': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe', 
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Text Animation - Perfect alignment */
+        .dropping-texts {
+            display: inline-block;
+            height: 1em;
+            line-height: 1;
+            vertical-align: baseline;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropping-texts > div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            animation: drop 2s infinite;
+            height: 1em;
+            line-height: 1;
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .dropping-texts > div:nth-child(1) { animation-delay: 0s; }
+        .dropping-texts > div:nth-child(2) { animation-delay: 0.5s; }
+        .dropping-texts > div:nth-child(3) { animation-delay: 1s; }
+        .dropping-texts > div:nth-child(4) { animation-delay: 1.5s; }
+
+        @keyframes drop {
+            0% { opacity: 0; transform: translateY(-100%); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(100%); }
+        }
+
+        /* Microchip loader animation */
+        .microchip-loader {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            animation: microchip-rotate 2s linear infinite;
+        }
+
+        .microchip-loader::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            background: #0ea5e9;
+            border-radius: 2px;
+            animation: microchip-pulse 1.5s ease-in-out infinite;
+        }
+
+        .microchip-loader::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            margin: -15px 0 0 -15px;
+            border: 2px solid #0ea5e9;
+            border-radius: 4px;
+            animation: microchip-scale 2s ease-in-out infinite;
+        }
+
+        @keyframes microchip-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes microchip-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        @keyframes microchip-scale {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+
+        /* Search box animation */
+        .search-box {
+            font-size: 20px;
+            border: solid 0.15em #0ea5e9;
+            display: inline-block;
+            position: relative;
+            border-radius: 2.5em;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+        }
+
+        .search-box input[type=text] {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            width: 2.5em;
+            height: 2.5em;
+            padding: 0.3em 2.1em 0.3em 0.4em;
+            border: none;
+            box-sizing: border-box;
+            border-radius: 2.5em;
+            background: white;
+            outline: none;
+            transition: width 0.45s;
+        }
+
+        .search-box input[type=text]:focus {
+            width: 15em;
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            right: 0.3em;
+            top: 0.3em;
+            width: 1.8em;
+            height: 1.8em;
+            border-radius: 50%;
+            background: #0ea5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-box .search-icon:hover {
+            background: #0284c7;
+        }
+
+        .search-box .search-icon svg {
+            width: 1em;
+            height: 1em;
+            fill: white;
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-blue-50 via-white to-indigo-100 overflow-x-hidden">
+    <!-- Header -->
+    <header class="fixed inset-x-0 top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100">
+        <nav class="flex items-center justify-between p-6 lg:px-8 max-w-7xl mx-auto" aria-label="Global">
+            <div class="flex lg:flex-1">
+                <a href="/" class="-m-1.5 p-1.5">
+                    <span class="text-xl font-bold text-blue-600">Components Aggregator</span>
+                </a>
+            </div>
+            <div class="flex lg:hidden">
+                <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+                    <span class="sr-only">Открыть главное меню</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+            </div>
+            <div class="hidden lg:flex lg:gap-x-12">
+                <a href="/about" class="text-sm font-semibold leading-6 text-gray-900">О нас</a>
+                <a href="/delivery" class="text-sm font-semibold leading-6 text-gray-900">Доставка</a>
+                <a href="/contacts" class="text-sm font-semibold leading-6 text-gray-900">Контакты</a>
+            </div>
+            <div class="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
+                <span class="text-sm text-gray-600">📍 Москва, ул. Примерная, 123</span>
+                <span class="text-sm text-gray-600">📞 +7 (495) 123-45-67</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <div class="relative isolate px-6 pt-14 lg:px-8">
+            <div class="mx-auto max-w-4xl py-32 sm:py-48 lg:py-56">
+                <div class="text-center">
+                    <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl">
+                        Найдите свой{' '}
+                        <span class="relative whitespace-nowrap text-blue-600">
+                            <svg
+                                aria-hidden="true"
+                                viewBox="0 0 418 42"
+                                class="absolute left-0 top-2/3 h-[0.58em] w-full fill-blue-300/70"
+                                preserveAspectRatio="none"
+                            >
+                                <path d="M203.371.916c-26.013-2.078-76.686 1.963-124.73 9.946L67.3 12.749C35.421 18.062 18.2 21.766 6.004 25.934 1.244 27.561.828 27.778.874 28.61c.07 1.214.828 1.121 9.595-1.176 9.072-2.377 17.15-3.92 39.246-7.496C123.565 7.986 157.869 4.492 195.942 5.046c7.461.108 19.25 1.696 19.17 2.582-.107 1.183-7.874 4.31-25.75 10.366-21.992 7.45-35.43 12.534-36.701 13.884-2.173 2.308-.202 4.407 4.442 4.734 2.654.187 3.263.157 15.593-.78 35.401-2.686 57.944-3.488 88.365-3.143 46.327.526 75.721 2.23 130.788 7.584 19.787 1.924 20.814 1.98 24.557 1.332l.066-.011c1.201-.203 1.53-1.825.399-2.335-2.911-1.31-4.893-1.604-22.048-3.261-57.509-5.556-87.871-7.36-132.059-7.842-23.239-.254-33.617-.116-50.627.674-11.629.54-42.371 2.494-46.696 2.967-2.359.259 8.133-3.625 26.504-9.81 23.239-7.825 27.934-10.149 28.304-14.005.417-4.348-3.529-6-16.878-7.066Z" />
+                            </svg>
+                            <span class="relative">
+                                <div class="dropping-texts">
+                                    <div>транзистор</div>
+                                    <div>резистор</div>
+                                    <div>диод</div>
+                                    <div>микрочип</div>
+                                </div>
+                            </span>
+                        </span>
+                    </h1>
+                    <p class="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
+                        Поиск электронных компонентов по лучшим ценам от проверенных поставщиков. 
+                        Тысячи товаров в наличии с быстрой доставкой по всей России.
+                    </p>
+                    
+                    <!-- Search Box -->
+                    <div class="mt-10 flex justify-center">
+                        <form id="searchForm" class="search-box">
+                            <input type="text" id="searchInput" placeholder="Поиск компонентов..." autocomplete="off">
+                            <div class="search-icon" onclick="document.getElementById('searchForm').submit()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Search Examples -->
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-500 mb-2">Популярные запросы:</p>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <button class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors" onclick="searchExample('LM317')">LM317</button>
+                            <button class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors" onclick="searchExample('2N2222')">2N2222</button>
+                            <button class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors" onclick="searchExample('NE555')">NE555</button>
+                            <button class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors" onclick="searchExample('STM32')">STM32</button>
+                            <button class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors" onclick="searchExample('резистор')">резистор</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Container -->
+        <div id="loadingContainer" class="hidden text-center py-8">
+            <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-blue-500 hover:bg-blue-400 transition ease-in-out duration-150 cursor-not-allowed">
+                <div class="microchip-loader mr-3"></div>
+                Поиск компонентов...
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-md p-4 mx-6 mb-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">Ошибка поиска</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <p id="errorText">Произошла ошибка при поиске</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="py-24 sm:py-32">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                <div class="mx-auto max-w-2xl lg:text-center">
+                    <h2 class="text-base font-semibold leading-7 text-blue-600">Components Aggregator</h2>
+                    <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        Все что нужно для ваших проектов
+                    </p>
+                    <p class="mt-6 text-lg leading-8 text-gray-600">
+                        Мы собрали компоненты от ведущих производителей в одном месте. 
+                        Быстрый поиск, актуальные цены, надежная доставка.
+                    </p>
+                </div>
+                <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+                    <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+                        <div class="flex flex-col">
+                            <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
+                                <div class="h-5 w-5 flex-none rounded-lg bg-blue-600 flex items-center justify-center">
+                                    <svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                Широкий ассортимент
+                            </dt>
+                            <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                                <p class="flex-auto">Тысячи электронных компонентов от микросхем до пассивных элементов</p>
+                            </dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
+                                <div class="h-5 w-5 flex-none rounded-lg bg-blue-600 flex items-center justify-center">
+                                    <svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                Актуальные цены
+                            </dt>
+                            <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                                <p class="flex-auto">Цены обновляются в реальном времени от проверенных поставщиков</p>
+                            </dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900">
+                                <div class="h-5 w-5 flex-none rounded-lg bg-blue-600 flex items-center justify-center">
+                                    <svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                Быстрая доставка
+                            </dt>
+                            <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                                <p class="flex-auto">Доставка по всей России с возможностью самовывоза</p>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white">
+        <div class="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8">
+            <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+                <div class="space-y-8">
+                    <div class="text-xl font-bold text-blue-600">Components Aggregator</div>
+                    <p class="text-sm leading-6 text-gray-600">
+                        Поиск электронных компонентов по лучшим ценам от проверенных поставщиков.
+                    </p>
+                </div>
+                <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+                    <div class="md:grid md:grid-cols-2 md:gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">Компания</h3>
+                            <ul role="list" class="mt-6 space-y-4">
+                                <li><a href="/about" class="text-sm leading-6 text-gray-600 hover:text-gray-900">О нас</a></li>
+                                <li><a href="/contacts" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Контакты</a></li>
+                            </ul>
+                        </div>
+                        <div class="mt-10 md:mt-0">
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">Покупателям</h3>
+                            <ul role="list" class="mt-6 space-y-4">
+                                <li><a href="/delivery" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Доставка</a></li>
+                                <li><a href="/help" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Помощь</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="md:grid md:grid-cols-1 md:gap-8">
+                        <div>
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">Контакты</h3>
+                            <div class="mt-6 space-y-4 text-sm text-gray-600">
+                                <p>📍 Москва, ул. Примерная, 123</p>
+                                <p>📞 +7 (495) 123-45-67</p>
+                                <p>✉️ info@components.ru</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs leading-5 text-gray-500">&copy; 2025 Components Aggregator. Все права защищены.</p>
+                    <a href="/privacy" class="text-xs leading-5 text-gray-500 hover:text-gray-900">Политика конфиденциальности</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Search functionality
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                searchProducts(query);
+            }
+        });
+
+        function searchExample(example) {
+            searchInput.value = example;
+            searchProducts(example);
+        }
+
+        async function searchProducts(query) {
+            try {
+                showLoading(true);
+                hideError();
+
+                // Simulate search delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Redirect to search results
+                window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
+
+            } catch (err) {
+                console.error('Ошибка поиска:', err);
+                showError(err.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            if (show) {
+                loadingContainer.classList.remove('hidden');
+            } else {
+                loadingContainer.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

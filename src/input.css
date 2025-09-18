@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom components */
+@layer components {
+  .search-box-animated {
+    @apply relative flex items-center max-w-md mx-auto;
+  }
+  
+  .search-input-animated {
+    @apply w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-full 
+           focus:outline-none focus:border-blue-500 transition-all duration-300
+           placeholder-gray-500;
+  }
+  
+  .search-button-animated {
+    @apply absolute right-2 p-2 bg-blue-500 text-white rounded-full 
+           hover:bg-blue-600 transition-colors duration-200;
+  }
+}
+
+/* Salient-inspired styles */
+@layer base {
+  body {
+    @apply font-inter antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}

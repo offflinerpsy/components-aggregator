@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} - Components Aggregator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/loader.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --secondary-color: #34a853;
+            --error-color: #ea4335;
+            --warning-color: #fbbc04;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --surface-color: #ffffff;
+            --background-color: #f8f9fa;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+            --shadow-md: 0 2px 6px rgba(60, 64, 67, 0.15), 0 1px 2px rgba(60, 64, 67, 0.3);
+            --shadow-lg: 0 4px 8px rgba(60, 64, 67, 0.2), 0 2px 4px rgba(60, 64, 67, 0.2);
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            background: var(--background-color);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        /* Навигация */
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-separator {
+            color: var(--text-secondary);
+        }
+
+        /* Основной контент */
+        .product {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        /* Галерея */
+        .gallery {
+            position: sticky;
+            top: var(--spacing-xl);
+            height: fit-content;
+        }
+
+        .gallery-main {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 400px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-thumbnails {
+            display: flex;
+            gap: var(--spacing-sm);
+            overflow-x: auto;
+            padding: var(--spacing-xs);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .gallery-thumbnails::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-thumbnail {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-xs);
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            background: var(--surface-color);
+        }
+
+        .gallery-thumbnail:hover,
+        .gallery-thumbnail.active {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .gallery-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Информация о товаре */
+        .info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .info-header {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .product-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.3;
+        }
+
+        .product-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .product-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .category-tag {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Цена и кнопки */
+        .price-section {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .price-main {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: baseline;
+            gap: var(--spacing-sm);
+        }
+
+        .price-original {
+            font-size: 16px;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+
+        .price-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: var(--spacing-md);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: #d3e3fd;
+        }
+
+        /* Характеристики */
+        .specs-section {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-primary);
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .spec-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .spec-value {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Описание */
+        .description-section {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .description-content {
+            color: var(--text-primary);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Документация */
+        .docs-section {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .doc-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            background: var(--background-color);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .doc-card:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .doc-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .doc-info {
+            flex: 1;
+        }
+
+        .doc-title {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .doc-size {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* Похожие товары */
+        .similar-section {
+            margin-top: var(--spacing-xl);
+        }
+
+        .similar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .similar-card {
+            background: var(--surface-color);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .similar-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .similar-image {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .similar-title {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .similar-price {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: auto;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .product {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery {
+                position: static;
+            }
+
+            .gallery-image {
+                height: 300px;
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-md);
+            }
+
+            .product-title {
+                font-size: 24px;
+            }
+
+            .price-main {
+                font-size: 28px;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .similar-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Навигация -->
+        <nav class="nav">
+            <a href="/">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Главная
+            </a>
+            {{#if categories}}
+                {{#each categories}}
+                    <span class="nav-separator">/</span>
+                    <a href="#">{{this}}</a>
+                {{/each}}
+            {{/if}}
+            <span class="nav-separator">/</span>
+            <span>{{name}}</span>
+        </nav>
+
+        <!-- Основной контент -->
+        <div class="product">
+            <!-- Галерея -->
+            <div class="gallery fade-in">
+                {{#if images}}
+                <div class="gallery-main">
+                    {{#with images.[0]}}
+                    <img src="{{this}}" alt="{{../name}}" class="gallery-image" id="mainImage">
+                    {{/with}}
+                </div>
+                {{#if images.[1]}}
+                <div class="gallery-thumbnails">
+                    {{#each ../images}}
+                    <div class="gallery-thumbnail {{#if @first}}active{{/if}}" onclick="changeImage(this, '{{this}}')">
+                        <img src="{{this}}" alt="{{../../name}}">
+                    </div>
+                    {{/each}}
+                </div>
+                {{/if}}
+                {{/if}}
+            </div>
+
+            <!-- Информация -->
+            <div class="info">
+                <div class="info-header fade-in">
+                    <h1 class="product-title">{{name}}</h1>
+                    <div class="product-meta">
+                        {{#if code}}
+                        <div class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 7V4h16v3M9 20h6M12 4v16"></path>
+                            </svg>
+                            Артикул: {{code}}
+                        </div>
+                        {{/if}}
+                        {{#if manufacturer}}
+                        <div class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            {{manufacturer}}
+                        </div>
+                        {{/if}}
+                    </div>
+                    {{#if categories}}
+                    <div class="product-categories">
+                        {{#each categories}}
+                        <span class="category-tag">{{this}}</span>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                </div>
+
+                <!-- Цена и кнопки -->
+                <div class="price-section fade-in delay-1">
+                    <div class="price-main">
+                        {{#if price}}
+                            {{#if price.display}}
+                                {{price.display}}
+                            {{else}}
+                                {{price}}
+                            {{/if}}
+                        {{else}}
+                            Цена не указана
+                        {{/if}}
+                    </div>
+                    {{#if stock}}
+                    <div class="price-info">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {{stock}}
+                    </div>
+                    {{/if}}
+                    <div class="actions">
+                        <a href="#" class="btn btn-primary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            Заказать
+                        </a>
+                        <button class="btn btn-secondary">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Характеристики -->
+                {{#if specs}}
+                <div class="specs-section fade-in delay-2">
+                    <h2 class="section-title">Характеристики</h2>
+                    <div class="specs-grid">
+                        {{#each specs}}
+                        <div class="spec-item">
+                            <span class="spec-label">{{@key}}</span>
+                            <span class="spec-value">{{this}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
+
+                <!-- Описание -->
+                {{#if description}}
+                <div class="description-section fade-in delay-2">
+                    <h2 class="section-title">Описание</h2>
+                    <div class="description-content">{{description}}</div>
+                </div>
+                {{/if}}
+
+                <!-- Документация -->
+                {{#if docs}}
+                <div class="docs-section fade-in delay-3">
+                    <h2 class="section-title">Документация</h2>
+                    <div class="docs-grid">
+                        {{#each docs}}
+                        <a href="/pdf?url={{url}}" class="doc-card" target="_blank">
+                            <div class="doc-icon">PDF</div>
+                            <div class="doc-info">
+                                <div class="doc-title">{{title}}</div>
+                                {{#if size}}<div class="doc-size">{{size}}</div>{{/if}}
+                            </div>
+                        </a>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+
+        <!-- Похожие товары -->
+        {{#if similar}}
+        <div class="similar-section fade-in delay-3">
+            <h2 class="section-title">Похожие товары</h2>
+            <div class="similar-grid">
+                {{#each similar}}
+                <a href="/product?url={{url}}" class="similar-card">
+                    {{#if image}}
+                    <img src="{{image}}" alt="{{name}}" class="similar-image">
+                    {{/if}}
+                    <div class="similar-title">{{name}}</div>
+                    {{#if price}}
+                    <div class="similar-price">
+                        {{#if price.display}}
+                            {{price.display}}
+                        {{else}}
+                            {{price}}
+                        {{/if}}
+                    </div>
+                    {{/if}}
+                </a>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+
+    <script>
+        // Переключение изображений
+        function changeImage(thumbnail, src) {
+            const mainImage = document.getElementById('mainImage');
+            const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+            
+            if (mainImage) {
+                mainImage.style.opacity = '0';
+                setTimeout(() => {
+                    mainImage.src = src;
+                    mainImage.style.opacity = '1';
+                }, 200);
+            }
+
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+        // Анимация появления элементов
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach(el => {
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
