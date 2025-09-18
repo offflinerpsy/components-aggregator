@@ -1,0 +1,18 @@
+{
+  "BASE_URL": "https://example.com",
+  "SEEDS": [
+    "/product/1N4148W-TP",
+    "/product/LM2596"
+  ],
+  "ALLOWED_HOSTS": [
+    "example.com",
+    "cdn.example.com"
+  ],
+  "DONOR_MAP": {
+    "/product/1N4148W-TP": "https://donor.site/diodes/1N4148W-TP"
+  },
+  "RENDER_BASE": "",
+  "HEADLESS": true,
+  "TIMEOUT_MS": 20000,
+  "CONCURRENCY": 3
+}

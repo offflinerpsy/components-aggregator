@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as cheerio from "cheerio";
+import * as cheerio from 'cheerio';
 import path from "path";
 import { promises as fs } from "fs";
 import db from "./db.js";

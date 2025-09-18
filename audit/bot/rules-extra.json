@@ -1,0 +1,14 @@
+{
+  "//": "Дополнительные правила для извлечения полей из HTML",
+  "title": { "selector": "h1.product-title, h1" },
+  "mpn": { "selector": "[data-mpn], .mpn, .nomenclature", "attr": "data-mpn" },
+  "manufacturer": { "selector": ".brand, .manufacturer a, .manufacturer" },
+  "images": { "selector": ".gallery img, .product-images img, .product-photo img", "attr": "src" },
+  "datasheets": { "selector": "a[href$='.pdf'], a[href*='datasheet']", "attr": "href" },
+  "specs": {
+    "Корпус": { "selector": "tr:has(td:contains('Корпус')) td:nth-child(2)" },
+    "Полярность": { "selector": "tr:has(td:contains('Полярность')) td:nth-child(2)" },
+    "Ток": { "selector": "tr:has(td:contains('Ток')) td:nth-child(2)" },
+    "Напряжение": { "selector": "tr:has(td:contains('Напряжение')) td:nth-child(2)" }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "BASE_URL": "http://89.104.69.77",
+  "SEEDS": [
+    "/",
+    "/search.html?q=LM317",
+    "/product?url=https://www.chipdip.ru/product/lm317t",
+    "/api/search?q=LM317",
+    "/api/product?url=https://www.chipdip.ru/product/lm317t"
+  ],
+  "ALLOWED_HOSTS": [
+    "89.104.69.77",
+    "localhost",
+    "www.chipdip.ru",
+    "static.chipdip.ru"
+  ],
+  "DONOR_MAP": {
+    "/product?url=https://www.chipdip.ru/product/lm317t": "https://www.chipdip.ru/product/lm317t"
+  },
+  "RENDER_BASE": "",
+  "HEADLESS": true,
+  "TIMEOUT_MS": 30000,
+  "CONCURRENCY": 2
+}

@@ -1,0 +1,23 @@
+{
+  "required_fields": [
+    "mpn",
+    "title",
+    "manufacturer",
+    "image",
+    "datasheets",
+    "specs"
+  ],
+  "spec_keys_min": [
+    "vrrm",
+    "if",
+    "vf",
+    "trr",
+    "ir",
+    "pd",
+    "tj",
+    "package",
+    "polarity"
+  ],
+  "pdf_required": true,
+  "image_min": 1
+}
