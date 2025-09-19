@@ -1,0 +1,1 @@
+import chipdip from './chipdip.js'; chipdip.search('LM317').then(r => { console.log('Results:', r.length); if (r.length > 0) { console.log('First result:', r[0]); } }).catch(e => { console.error('Error:', e.message); console.error('Stack:', e.stack); });

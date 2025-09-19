@@ -1,0 +1,18 @@
+---
+description: "DEEP • Разрешённый корень. Работать ТОЛЬКО здесь."
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+РАБОЧИЙ КАТАЛОГ (Windows):
+C:\Users\Makkaroshka\Documents\GitHub\components-aggregator
+
+Правила:
+• Всегда считать текущей директорией путь выше.
+• Все относительные пути (./bots, ./lib, ./data, ./tools, ./configs) интерпретировать относительно этого корня.
+• Перед выполнением любой команды в терминале:
+  Set-Location 'C:\Users\Makkaroshka\Documents\GitHub\components-aggregator'
+• Любые операции чтения/записи/создания файлов разрешены ТОЛЬКО если абсолютный путь
+  начинается с: C:\Users\Makkaroshka\Documents\GitHub\components-aggregator
+• Обращения к другим дискам/папкам (C:\Users\*, D:\, E:\ и т.п.) — запрещены для этого чата/проекта.

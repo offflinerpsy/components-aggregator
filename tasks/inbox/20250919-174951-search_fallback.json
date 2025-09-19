@@ -1,0 +1,6 @@
+{
+  "title": "search_fallback",
+  "goal": "Подключить шаблон выдачи поиска (loads/product_cart/deep-search-results.html) к API:\n1) Реализовать GET /api/search?q=&page=&pageSize= в Strapi-слое: ChipDip первично; если пусто/неполно — фолбэк к парсерам (LCSC, TME, Farnell, JLCPCB, Future, OEMSTrade).\n2) Нормализация → канон Product; пагинация; подсветка целого слова (уже в шаблоне).\n3) Вернуть {items, total, page, pageSize}. Поля items в каноне: mpn, description, availability{inStock,lead}, pricing[{qty,price,currency}], package, packaging, url, suppliers[].\n4) Обновить PROJECT_STATUS.md: что сделано / что дальше.\n",
+  "allow_ops": false,
+  "notes": "ЧИТАЙ ONE-README-FOR-CURSOR.md и PROJECT_STATUS.md. Работай только в loads/product_cart/** и parsers/**."
+}

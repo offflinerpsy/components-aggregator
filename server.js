@@ -6,6 +6,7 @@ import chipdip from './chipdip.js';
 import db from './db.js';
 import template from './template.js';
 import productV2 from './src/server/routes/product_v2.js';
+import searchAggregator from './parsers/search-aggregator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,22 +33,28 @@ app.get('/delivery', (req, res) => {
     res.send('<h1>Доставка</h1><p>Страница в разработке</p><a href="/">← Назад</a>');
 });
 
-// API поиска
+// API поиска с пагинацией и фолбэком
 app.get('/api/search', async (req, res) => {
     try {
         const query = req.query.q;
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 20;
+        
         if (!query) {
             return res.status(400).json({ error: 'Query parameter q is required' });
         }
 
-        console.log(`🔍 Поиск: ${query}`);
-        const results = await chipdip.search(query);
+        console.log(`🔍 Поиск: ${query} (страница ${page}, размер ${pageSize})`);
+        const result = await searchAggregator.search(query, { page, pageSize });
         
         res.json({
             success: true,
             query,
-            results: results,
-            count: results.length
+            items: result.items,
+            total: result.total,
+            page: result.page,
+            pageSize: result.pageSize,
+            hasMore: result.hasMore
         });
     } catch (error) {
         console.error('❌ Ошибка поиска:', error);

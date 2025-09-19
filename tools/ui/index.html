@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Warden-Lite</title>
+  <style>
+    body{font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:20px;max-width:900px}
+    h1{margin:0 0 12px} .row{display:flex;gap:8px;flex-wrap:wrap}
+    input,textarea,button,select{font:inherit;padding:8px;border:1px solid #ccc;border-radius:8px}
+    textarea{width:100%;height:100px}
+    .card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:8px 0}
+    .muted{color:#6b7280}
+  </style>
+</head>
+<body>
+  <h1>Warden-Lite</h1>
+  <p class="muted">SAFE/OPS контроль + задачи для Cursor. Открывай это окно при работе.</p>
+
+  <div class="card">
+    <h3>Быстрый коммит → push</h3>
+    <div class="row">
+      <input id="msg" placeholder="auto: progress" style="flex:1"/>
+      <button onclick="save()">Сохранить</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Создать задачу для Cursor</h3>
+    <div class="row">
+      <input id="title" placeholder="search_fallback"/>
+      <label><input type="checkbox" id="ops"/> Нужен OPS</label>
+    </div>
+    <textarea id="goal" placeholder="Цель/шаги..."></textarea>
+    <textarea id="notes" placeholder="Примечания (ссылки на файлы)…"></textarea>
+    <div class="row">
+      <button onclick="createTask()">Создать</button>
+      <button onclick="load()">Обновить список</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Входящие задачи</h3>
+    <div id="list"></div>
+  </div>
+
+  <div class="card">
+    <h3>OPS-допуск (разрешить правки шаблонов инфры)</h3>
+    <div class="row">
+      <input id="areas" value="nginx, proxy, strapi" style="flex:1"/>
+      <input id="opsmsg" value="ops: approve from Warden" style="flex:1"/>
+      <button onclick="approve()">Разрешить</button>
+    </div>
+    <p class="muted">Это добавит <b>OPS-ALLOW</b> в коммит и пушнет.</p>
+  </div>
+
+  <script>
+    async function load(){
+      const r = await fetch('/tasks'); const j = await r.json();
+      const el = document.getElementById('list'); el.innerHTML='';
+      j.items.forEach(t=>{
+        const d = document.createElement('div');
+        d.className='card';
+        d.innerHTML = `<b>${t.title}</b> <span class="muted">(${t.allow_ops?'OPS':'SAFE'})</span><br>
+                       <pre>${t.goal}</pre><pre class="muted">${t.notes||''}</pre>`;
+        el.appendChild(d);
+      });
+    }
+    async function save(){
+      const msg = document.getElementById('msg').value || 'auto: progress';
+      await fetch('/git/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+      alert('OK: commit + push');
+    }
+    async function createTask(){
+      const title = document.getElementById('title').value||'task';
+      const allow_ops = document.getElementById('ops').checked;
+      const goal = document.getElementById('goal').value||'';
+      const notes = document.getElementById('notes').value||'';
+      await fetch('/tasks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,allow_ops,goal,notes})});
+      load();
+    }
+    async function approve(){
+      const areas = document.getElementById('areas').value||'nginx, proxy, strapi';
+      const message = document.getElementById('opsmsg').value||'ops: approve from Warden';
+      await fetch('/ops/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({areas,message})});
+      alert('OPS разрешён и запушен');
+    }
+    load();
+  </script>
+</body>
+</html>

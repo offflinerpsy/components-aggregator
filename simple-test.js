@@ -1,0 +1,1 @@
+console.log('Starting test...'); import('./chipdip.js').then(m => { console.log('Module loaded'); return m.default.search('LM317'); }).then(r => { console.log('Results:', r.length); }).catch(e => { console.error('Full error:', e); console.error('Error message:', e.message); console.error('Error stack:', e.stack); });
