@@ -1,0 +1,89 @@
+﻿{
+  "items": [
+    {
+      "mpn": "2N3904",
+      "description": "NPN транзистор общего назначения",
+      "availability": {
+        "inStock": 1500,
+        "lead": null
+      },
+      "pricing": [
+        {
+          "qty": 1,
+          "price": 0.12,
+          "currency": "USD"
+        },
+        {
+          "qty": 100,
+          "price": 0.08,
+          "currency": "USD"
+        }
+      ],
+      "package": "TO-92",
+      "packaging": "Tape & Reel",
+      "url": "https://example.com/product/2n3904",
+      "suppliers": [
+        {
+          "name": "ChipDip",
+          "url": "https://chipdip.ru"
+        }
+      ]
+    },
+    {
+      "mpn": "BC547",
+      "description": "NPN транзистор малой мощности",
+      "availability": {
+        "inStock": 0,
+        "lead": "2-3 недели"
+      },
+      "pricing": [
+        {
+          "qty": 1,
+          "price": 0.15,
+          "currency": "EUR"
+        }
+      ],
+      "package": "TO-92",
+      "packaging": "Bulk",
+      "url": "https://example.com/product/bc547",
+      "suppliers": [
+        {
+          "name": "TME",
+          "url": "https://tme.com"
+        }
+      ]
+    },
+    {
+      "mpn": "2N2222",
+      "description": "NPN транзистор средней мощности",
+      "availability": {
+        "inStock": 500,
+        "lead": null
+      },
+      "pricing": [
+        {
+          "qty": 1,
+          "price": 0.25,
+          "currency": "RUB"
+        },
+        {
+          "qty": 50,
+          "price": 0.18,
+          "currency": "RUB"
+        }
+      ],
+      "package": "TO-18",
+      "packaging": "Tube",
+      "url": "https://example.com/product/2n2222",
+      "suppliers": [
+        {
+          "name": "Farnell",
+          "url": "https://farnell.com"
+        }
+      ]
+    }
+  ],
+  "total": 3,
+  "page": 1,
+  "pageSize": 20
+}

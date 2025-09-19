@@ -22,7 +22,7 @@
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
-  <main class="max-w-6xl mx-auto p-4 md:p-6">
+  <main class="max-w-screen-lg mx-auto p-4 md:p-6">
     <section class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
       <div class="px-4 md:px-6 py-4 border-b flex items-end justify-between gap-4 flex-wrap">
         <div>
@@ -40,8 +40,8 @@
               <th class="text-left font-semibold px-4 md:px-6 py-3 w-40">Наличие</th>
               <th class="text-left font-semibold px-4 md:px-6 py-3 w-80">Цена</th>
               <th class="text-left font-semibold px-4 md:px-6 py-3">Описание</th>
-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-32">Корпус</th>
-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40">Упаковка</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-32 hidden sm:table-cell">Корпус</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40 hidden sm:table-cell">Упаковка</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
@@ -91,7 +91,7 @@
       return tiers
         .slice()
         .sort((a,b)=>a.qty-b.qty)
-        .map(t => `${t.qty}+: ${currency(t.currency)}${Number(t.price).toFixed(3)}`)
+        .map(t => `от ${currency(t.currency)}${Number(t.price).toFixed(2)} / ${t.qty} шт`)
         .join('  •  ');
     }
 
@@ -128,9 +128,27 @@
 
     async function fetchPage() {
       const url = `${API_BASE}/api/search?q=${encodeURIComponent(q)}&page=${page}&pageSize=${PAGE_SIZE}`.replace(/^\/\//,'/');
-      const res = await fetch(url, { credentials: 'include' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
+      
+      try {
+        const res = await fetch(url, { credentials: 'include' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      } catch (error) {
+        console.warn('API недоступно, используем mock данные:', error.message);
+        return await fetchMockData();
+      }
+    }
+
+    async function fetchMockData() {
+      try {
+        const mockUrl = `public/mock/search-${encodeURIComponent(q)}.json`;
+        const res = await fetch(mockUrl);
+        if (!res.ok) throw new Error(`Mock не найден: ${res.status}`);
+        return res.json();
+      } catch (error) {
+        console.warn('Mock данные недоступны, возвращаем пустой результат');
+        return { items: [], total: 0, page: 1, pageSize: PAGE_SIZE };
+      }
     }
 
     function renderItems(items) {
@@ -146,8 +164,8 @@
           <td class="px-4 md:px-6 py-3">${availabilityCell(r.availability)}</td>
           <td class="px-4 md:px-6 py-3"><span class="whitespace-pre-wrap">${priceText(r.pricing)}</span></td>
           <td class="px-4 md:px-6 py-3"><div class="prose prose-sm max-w-none">${highlight(r.description || '', q)}</div></td>
-          <td class="px-4 md:px-6 py-3">${r.package || '—'}</td>
-          <td class="px-4 md:px-6 py-3">${r.packaging || '—'}</td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.package || '—'}</td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.packaging || '—'}</td>
         </tr>
       `).join('');
       $rows.insertAdjacentHTML('beforeend', html);
