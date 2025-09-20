@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DEEP • Результаты поиска</title>
+  <title>DEEP вЂў Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР°</title>
   <!-- Rendered client-side; data from Strapi (server). DO NOT TOUCH proxy/server configs. -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -26,22 +26,22 @@
     <section class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
       <div class="px-4 md:px-6 py-4 border-b flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h1 class="text-lg md:text-xl font-semibold">Результаты поиска</h1>
-          <p class="text-sm text-gray-600">запрос: <span class="font-mono" id="q">—</span></p>
+          <h1 class="text-lg md:text-xl font-semibold">Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР°</h1>
+          <p class="text-sm text-gray-600">Р·Р°РїСЂРѕСЃ: <span class="font-mono" id="q">вЂ”</span></p>
         </div>
-        <div class="text-sm text-gray-600" id="status">Показано 0 из 0</div>
+        <div class="text-sm text-gray-600" id="status">РџРѕРєР°Р·Р°РЅРѕ 0 РёР· 0</div>
       </div>
 
       <div class="overflow-x-auto">
         <table class="table-grid min-w-full text-sm">
           <thead>
             <tr>
-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-72">Артикул (MPN)</th>
-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40">Наличие</th>
-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-80">Цена</th>
-              <th class="text-left font-semibold px-4 md:px-6 py-3">Описание</th>
-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-32 hidden sm:table-cell">Корпус</th>
-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40 hidden sm:table-cell">Упаковка</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-72">РђСЂС‚РёРєСѓР» (MPN)</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40">РќР°Р»РёС‡РёРµ</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-80">Р¦РµРЅР°</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3">РћРїРёСЃР°РЅРёРµ</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-32 hidden sm:table-cell">РљРѕСЂРїСѓСЃ</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40 hidden sm:table-cell">РЈРїР°РєРѕРІРєР°</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
@@ -49,26 +49,26 @@
       </div>
 
       <div class="p-4 md:p-6 border-t flex items-center justify-center">
-        <button id="load-more" class="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 hidden">Показать ещё</button>
+        <button id="load-more" class="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 hidden">РџРѕРєР°Р·Р°С‚СЊ РµС‰С‘</button>
       </div>
     </section>
   </main>
 
   <script>
-    // ==== Конфиг API ====
-    const API_BASE = ''; // пусто = относительные пути /api/search
+    // ==== РљРѕРЅС„РёРі API ====
+    const API_BASE = ''; // РїСѓСЃС‚Рѕ = РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РїСѓС‚Рё /api/search
     const PAGE_SIZE = 20;
 
-    // ==== Утилиты ====
+    // ==== РЈС‚РёР»РёС‚С‹ ====
     const getParam = (k) => new URLSearchParams(location.search).get(k) || '';
 
-    // Экранируем все спецсимволы RegExp (используем в new RegExp)
+    // Р­РєСЂР°РЅРёСЂСѓРµРј РІСЃРµ СЃРїРµС†СЃРёРјРІРѕР»С‹ RegExp (РёСЃРїРѕР»СЊР·СѓРµРј РІ new RegExp)
     const escRE = (s) => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 
-    // Для проверки границ слова (учитываем дефис в тексте)
-    const WORD_CHARS_RE = /[A-Za-zА-Яа-яЁё0-9_-]/u;
-    // Что считаем «словным» запросом (дефис исключён)
-    const WORD_LIKE_RE  = /^[A-Za-zА-Яа-яЁё0-9_]+$/u;
+    // Р”Р»СЏ РїСЂРѕРІРµСЂРєРё РіСЂР°РЅРёС† СЃР»РѕРІР° (СѓС‡РёС‚С‹РІР°РµРј РґРµС„РёСЃ РІ С‚РµРєСЃС‚Рµ)
+    const WORD_CHARS_RE = /[A-Za-zРђ-РЇР°-СЏРЃС‘0-9_-]/u;
+    // Р§С‚Рѕ СЃС‡РёС‚Р°РµРј В«СЃР»РѕРІРЅС‹РјВ» Р·Р°РїСЂРѕСЃРѕРј (РґРµС„РёСЃ РёСЃРєР»СЋС‡С‘РЅ)
+    const WORD_LIKE_RE  = /^[A-Za-zРђ-РЇР°-СЏРЃС‘0-9_]+$/u;
 
     function highlight(text, term) {
       if (!term) return text;
@@ -87,35 +87,35 @@
     }
 
     function priceText(tiers) {
-      if (!Array.isArray(tiers) || !tiers.length) return '—';
+      if (!Array.isArray(tiers) || !tiers.length) return 'вЂ”';
       return tiers
         .slice()
         .sort((a,b)=>a.qty-b.qty)
-        .map(t => `от ${currency(t.currency)}${Number(t.price).toFixed(2)} / ${t.qty} шт`)
-        .join('  •  ');
+        .map(t => `РѕС‚ ${currency(t.currency)}${Number(t.price).toFixed(2)} / ${t.qty} С€С‚`)
+        .join('  вЂў  ');
     }
 
     function currency(code) {
       if (!code) return '$';
-      const m = { USD:'$', EUR:'€', RUB:'₽' };
+      const m = { USD:'$', EUR:'в‚¬', RUB:'в‚Ѕ' };
       return m[code] || (code + ' ');
     }
 
     function availabilityCell(av) {
-      if (!av || (av.inStock == null && !av.lead)) return '<span class="text-gray-500">—</span>';
+      if (!av || (av.inStock == null && !av.lead)) return '<span class="text-gray-500">вЂ”</span>';
       if (Number(av.inStock) > 0) {
         return `<span class="inline-flex items-center gap-2">
           <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-          В наличии: ${Number(av.inStock).toLocaleString('ru-RU')}
+          Р’ РЅР°Р»РёС‡РёРё: ${Number(av.inStock).toLocaleString('ru-RU')}
         </span>`;
       }
       return `<span class="inline-flex items-center gap-2">
         <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
-        Нет в наличии${av.lead ? ` • поставка ${av.lead}` : ''}
+        РќРµС‚ РІ РЅР°Р»РёС‡РёРё${av.lead ? ` вЂў РїРѕСЃС‚Р°РІРєР° ${av.lead}` : ''}
       </span>`;
     }
 
-    // ==== Состояние ====
+    // ==== РЎРѕСЃС‚РѕСЏРЅРёРµ ====
     let page = 1;
     let total = 0;
     let shown = 0;
@@ -124,7 +124,7 @@
     const $rows = document.getElementById('rows');
     const $status = document.getElementById('status');
     const $btn = document.getElementById('load-more');
-    document.getElementById('q').textContent = q || '—';
+    document.getElementById('q').textContent = q || 'вЂ”';
 
     async function fetchPage() {
       const url = `${API_BASE}/api/search?q=${encodeURIComponent(q)}&page=${page}&pageSize=${PAGE_SIZE}`.replace(/^\/\//,'/');
@@ -134,7 +134,7 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       } catch (error) {
-        console.warn('API недоступно, используем mock данные:', error.message);
+        console.warn('API РЅРµРґРѕСЃС‚СѓРїРЅРѕ, РёСЃРїРѕР»СЊР·СѓРµРј mock РґР°РЅРЅС‹Рµ:', error.message);
         return await fetchMockData();
       }
     }
@@ -143,10 +143,10 @@
       try {
         const mockUrl = `/public/mock/search-${encodeURIComponent(q)}.json`;
         const res = await fetch(mockUrl);
-        if (!res.ok) throw new Error(`Mock не найден: ${res.status}`);
+        if (!res.ok) throw new Error(`Mock РЅРµ РЅР°Р№РґРµРЅ: ${res.status}`);
         return res.json();
       } catch (error) {
-        console.warn('Mock данные недоступны, возвращаем пустой результат');
+        console.warn('Mock РґР°РЅРЅС‹Рµ РЅРµРґРѕСЃС‚СѓРїРЅС‹, РІРѕР·РІСЂР°С‰Р°РµРј РїСѓСЃС‚РѕР№ СЂРµР·СѓР»СЊС‚Р°С‚');
         return { items: [], total: 0, page: 1, pageSize: PAGE_SIZE };
       }
     }
@@ -157,15 +157,15 @@
           <td class="px-4 md:px-6 py-3">
             <div class="flex items-start gap-3">
               <div class="min-w-0">
-                <a href="deep-product-template.html?mpn=${encodeURIComponent(r.mpn)}" class="font-medium text-brand-700 hover:underline break-all">${r.mpn || '—'}</a>
+                <a href="deep-product-template.html?mpn=${encodeURIComponent(r.mpn)}" class="font-medium text-brand-700 hover:underline break-all">${r.mpn || 'вЂ”'}</a>
               </div>
             </div>
           </td>
           <td class="px-4 md:px-6 py-3">${availabilityCell(r.availability)}</td>
           <td class="px-4 md:px-6 py-3"><span class="whitespace-pre-wrap">${priceText(r.pricing)}</span></td>
           <td class="px-4 md:px-6 py-3"><div class="prose prose-sm max-w-none">${highlight(r.description || '', q)}</div></td>
-          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.package || '—'}</td>
-          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.packaging || '—'}</td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.package || 'вЂ”'}</td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.packaging || 'вЂ”'}</td>
         </tr>
       `).join('');
       $rows.insertAdjacentHTML('beforeend', html);
@@ -174,7 +174,7 @@
     async function loadMore() {
       $btn.disabled = true;
       const prev = $btn.textContent;
-      $btn.textContent = 'Загружаю…';
+      $btn.textContent = 'Р—Р°РіСЂСѓР¶Р°СЋвЂ¦';
       try {
         const data = await fetchPage();
         const items = Array.isArray(data.items) ? data.items : [];
@@ -182,12 +182,12 @@
         renderItems(items);
         shown += items.length;
         page += 1;
-        $status.textContent = `Показано ${shown} из ${total}`;
+        $status.textContent = `РџРѕРєР°Р·Р°РЅРѕ ${shown} РёР· ${total}`;
         if (shown >= total || items.length === 0) $btn.classList.add('hidden');
         else $btn.classList.remove('hidden');
       } catch (e) {
         console.error(e);
-        $status.textContent = 'Ошибка загрузки данных. Проверь сервер/прокси.';
+        $status.textContent = 'РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РґР°РЅРЅС‹С…. РџСЂРѕРІРµСЂСЊ СЃРµСЂРІРµСЂ/РїСЂРѕРєСЃРё.';
         $btn.classList.add('hidden');
       } finally {
         $btn.disabled = false;
@@ -197,7 +197,7 @@
 
     (async function init(){
       if (!q) {
-        $status.textContent = 'Укажите параметр q в URL.';
+        $status.textContent = 'РЈРєР°Р¶РёС‚Рµ РїР°СЂР°РјРµС‚СЂ q РІ URL.';
         return;
       }
       await loadMore();
@@ -206,3 +206,4 @@
   </script>
 </body>
 </html>
+
