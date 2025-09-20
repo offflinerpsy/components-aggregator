@@ -1,0 +1,8 @@
+{
+  "status": "API недоступно",
+  "reason": "Сервер не отвечает на /api/search",
+  "error": "Connection timeout or server not running",
+  "fallback": "Используется MOCK данные из /public/mock/search-транзистор.json",
+  "timestamp": "2025-09-19T11:15:00Z",
+  "url_tested": "http://89.104.69.77/api/search?q=транзистор"
+}

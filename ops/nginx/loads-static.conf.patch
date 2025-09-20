@@ -1,0 +1,33 @@
+# Патч для nginx конфигурации
+# Добавить в /etc/nginx/sites-enabled/components-aggregator.conf
+
+# Статические файлы для loads/
+location /loads/ {
+    alias /var/www/html/loads/;
+    try_files $uri $uri/ =404;
+    
+    # MIME типы
+    location ~* \.(html|htm)$ {
+        add_header Content-Type text/html;
+    }
+    location ~* \.(js|css)$ {
+        add_header Content-Type application/javascript;
+    }
+    location ~* \.(json)$ {
+        add_header Content-Type application/json;
+    }
+}
+
+# Статические файлы для public/
+location /public/ {
+    alias /var/www/html/public/;
+    try_files $uri $uri/ =404;
+    
+    # MIME типы
+    location ~* \.(json)$ {
+        add_header Content-Type application/json;
+    }
+}
+
+# Приоритет: сначала статика, потом прокси
+# (этот блок должен быть ПЕРЕД основным location /)
