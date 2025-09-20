@@ -1,0 +1,7 @@
+{
+  "status": "API недоступно",
+  "reason": "Сервер не запущен на порту 80",
+  "error": "Failed to connect to localhost port 80",
+  "fallback": "Используется MOCK данные из public/mock/search-транзистор.json",
+  "timestamp": "2025-09-19T20:45:00Z"
+}
