@@ -108,7 +108,7 @@ def index():
     <div class='card'><div class='hdr'><b>Git</b></div>
     <div class='body row'>
       <form method='post' action='/git/pull'><button class='btn' type='submit'>Pull</button></form>
-      <form method='post' action='/git/push'>
+      <form id='gitPushForm' method='post' action='/git/push'>
         <input name='message' value='warden: update tasks' style='width:360px'>
         <button class='btn' type='submit'>Add+Commit+Push</button>
       </form>
