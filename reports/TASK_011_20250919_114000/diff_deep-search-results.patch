@@ -1,0 +1,249 @@
+diff --git a/loads/product_cart/product_cart/deep-search-results.html b/loads/product_cart/product_cart/deep-search-results.html
+index b9ce8f75..aeece589 100644
+--- a/loads/product_cart/product_cart/deep-search-results.html
++++ b/loads/product_cart/product_cart/deep-search-results.html
+@@ -1,24 +1,12 @@
+ ﻿﻿<!doctype html>
+ <html lang="ru">
+-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1" />
+-  <title>DEEP вЂў Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР°</title>
++<head>
++  <meta charset="utf-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1" />
++  <title>DEEP • Результаты поиска</title>
+   <!-- Rendered client-side; data from Strapi (server). DO NOT TOUCH proxy/server configs. -->
++  <script src="https://cdn.tailwindcss.com"></script>
+   <script>
+-  function makeMockUrl(q){
+-    try{ if(location.protocol==='file:'){
+-      return '../../public/mock/search-'+encodeURIComponent(q)+'.json';
+-    }}catch(e){}
+-    return '/public/mock/search-'+encodeURIComponent(q)+'.json';
+-  }
+-</script></script>
+-  <script>
+-  function makeMockUrl(q){
+-    try{ if(location.protocol==='file:'){
+-      return '../../public/mock/search-'+encodeURIComponent(q)+'.json';
+-    }}catch(e){}
+-    return '/public/mock/search-'+encodeURIComponent(q)+'.json';
+-  }
+-</script>
+     tailwind.config = {
+       theme: {
+         extend: {
+@@ -38,22 +26,22 @@
+     <section class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+       <div class="px-4 md:px-6 py-4 border-b flex items-end justify-between gap-4 flex-wrap">
+         <div>
+-          <h1 class="text-lg md:text-xl font-semibold">Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР°</h1>
+-          <p class="text-sm text-gray-600">Р·Р°РїСЂРѕСЃ: <span class="font-mono" id="q">вЂ”</span></p>
++          <h1 class="text-lg md:text-xl font-semibold">Результаты поиска</h1>
++          <p class="text-sm text-gray-600">запрос: <span class="font-mono" id="q">—</span></p>
+         </div>
+-        <div class="text-sm text-gray-600" id="status">РџРѕРєР°Р·Р°РЅРѕ 0 РёР· 0</div>
++        <div class="text-sm text-gray-600" id="status">Показано 0 из 0</div>
+       </div>
+ 
+       <div class="overflow-x-auto">
+         <table class="table-grid min-w-full text-sm">
+           <thead>
+             <tr>
+-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-72">РђСЂС‚РёРєСѓР» (MPN)</th>
+-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40">РќР°Р»РёС‡РёРµ</th>
+-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-80">Р¦РµРЅР°</th>
+-              <th class="text-left font-semibold px-4 md:px-6 py-3">РћРїРёСЃР°РЅРёРµ</th>
+-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-32 hidden sm:table-cell">РљРѕСЂРїСѓСЃ</th>
+-              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40 hidden sm:table-cell">РЈРїР°РєРѕРІРєР°</th>
++              <th class="text-left font-semibold px-4 md:px-6 py-3 w-72">Артикул (MPN)</th>
++              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40">Наличие</th>
++              <th class="text-left font-semibold px-4 md:px-6 py-3 w-80">Цена</th>
++              <th class="text-left font-semibold px-4 md:px-6 py-3">Описание</th>
++              <th class="text-left font-semibold px-4 md:px-6 py-3 w-32 hidden sm:table-cell">Корпус</th>
++              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40 hidden sm:table-cell">Упаковка</th>
+             </tr>
+           </thead>
+           <tbody id="rows"></tbody>
+@@ -61,33 +49,26 @@
+       </div>
+ 
+       <div class="p-4 md:p-6 border-t flex items-center justify-center">
+-        <button id="load-more" class="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 hidden">РџРѕРєР°Р·Р°С‚СЊ РµС‰С‘</button>
++        <button id="load-more" class="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 hidden">Показать ещё</button>
+       </div>
+     </section>
+   </main>
+ 
+   <script>
+-  function makeMockUrl(q){
+-    try{ if(location.protocol==='file:'){
+-      return '../../public/mock/search-'+encodeURIComponent(q)+'.json';
+-    }}catch(e){}
+-    return '/public/mock/search-'+encodeURIComponent(q)+'.json';
+-  }
+-</script>
+-    // ==== РљРѕРЅС„РёРі API ====
+-    const API_BASE = ''; // РїСѓСЃС‚Рѕ = РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РїСѓС‚Рё /api/search
++    // ==== Конфиг API ====
++    const API_BASE = ''; // пусто = относительные пути /api/search
+     const PAGE_SIZE = 20;
+ 
+-    // ==== РЈС‚РёР»РёС‚С‹ ====
++    // ==== Утилиты ====
+     const getParam = (k) => new URLSearchParams(location.search).get(k) || '';
+ 
+-    // Р­РєСЂР°РЅРёСЂСѓРµРј РІСЃРµ СЃРїРµС†СЃРёРјРІРѕР»С‹ RegExp (РёСЃРїРѕР»СЊР·СѓРµРј РІ new RegExp)
++    // Экранируем все спецсимволы RegExp (используем в new RegExp)
+     const escRE = (s) => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+ 
+-    // Р”Р»СЏ РїСЂРѕРІРµСЂРєРё РіСЂР°РЅРёС† СЃР»РѕРІР° (СѓС‡РёС‚С‹РІР°РµРј РґРµС„РёСЃ РІ С‚РµРєСЃС‚Рµ)
+-    const WORD_CHARS_RE = /[A-Za-zРђ-РЇР°-СЏРЃС‘0-9_-]/u;
+-    // Р§С‚Рѕ СЃС‡РёС‚Р°РµРј В«СЃР»РѕРІРЅС‹РјВ» Р·Р°РїСЂРѕСЃРѕРј (РґРµС„РёСЃ РёСЃРєР»СЋС‡С‘РЅ)
+-    const WORD_LIKE_RE  = /^[A-Za-zРђ-РЇР°-СЏРЃС‘0-9_]+$/u;
++    // Для проверки границ слова (учитываем дефис в тексте)
++    const WORD_CHARS_RE = /[A-Za-zА-Яа-яЁё0-9_-]/u;
++    // Что считаем «словным» запросом (дефис исключён)
++    const WORD_LIKE_RE  = /^[A-Za-zА-Яа-яЁё0-9_]+$/u;
+ 
+     function highlight(text, term) {
+       if (!term) return text;
+@@ -106,35 +87,35 @@
+     }
+ 
+     function priceText(tiers) {
+-      if (!Array.isArray(tiers) || !tiers.length) return 'вЂ”';
++      if (!Array.isArray(tiers) || !tiers.length) return '—';
+       return tiers
+         .slice()
+         .sort((a,b)=>a.qty-b.qty)
+-        .map(t => `РѕС‚ ${currency(t.currency)}${Number(t.price).toFixed(2)} / ${t.qty} С€С‚`)
+-        .join('  вЂў  ');
++        .map(t => `от ${currency(t.currency)}${Number(t.price).toFixed(2)} / ${t.qty} шт`)
++        .join('  •  ');
+     }
+ 
+     function currency(code) {
+       if (!code) return '$';
+-      const m = { USD:'$', EUR:'в‚¬', RUB:'в‚Ѕ' };
++      const m = { USD:'$', EUR:'€', RUB:'₽' };
+       return m[code] || (code + ' ');
+     }
+ 
+     function availabilityCell(av) {
+-      if (!av || (av.inStock == null && !av.lead)) return '<span class="text-gray-500">вЂ”</span>';
++      if (!av || (av.inStock == null && !av.lead)) return '<span class="text-gray-500">—</span>';
+       if (Number(av.inStock) > 0) {
+         return `<span class="inline-flex items-center gap-2">
+           <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+-          Р’ РЅР°Р»РёС‡РёРё: ${Number(av.inStock).toLocaleString('ru-RU')}
++          В наличии: ${Number(av.inStock).toLocaleString('ru-RU')}
+         </span>`;
+       }
+       return `<span class="inline-flex items-center gap-2">
+         <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+-        РќРµС‚ РІ РЅР°Р»РёС‡РёРё${av.lead ? ` вЂў РїРѕСЃС‚Р°РІРєР° ${av.lead}` : ''}
++        Нет в наличии${av.lead ? ` • поставка ${av.lead}` : ''}
+       </span>`;
+     }
+ 
+-    // ==== РЎРѕСЃС‚РѕСЏРЅРёРµ ====
++    // ==== Состояние ====
+     let page = 1;
+     let total = 0;
+     let shown = 0;
+@@ -143,29 +124,29 @@
+     const $rows = document.getElementById('rows');
+     const $status = document.getElementById('status');
+     const $btn = document.getElementById('load-more');
+-    document.getElementById('q').textContent = q || 'вЂ”';
++    document.getElementById('q').textContent = q || '—';
+ 
+     async function fetchPage() {
+       const url = `${API_BASE}/api/search?q=${encodeURIComponent(q)}&page=${page}&pageSize=${PAGE_SIZE}`.replace(/^\/\//,'/');
+-      
++
+       try {
+         const res = await fetch(url, { credentials: 'include' });
+         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+         return res.json();
+       } catch (error) {
+-        console.warn('API РЅРµРґРѕСЃС‚СѓРїРЅРѕ, РёСЃРїРѕР»СЊР·СѓРµРј mock РґР°РЅРЅС‹Рµ:', error.message);
++        console.warn('API недоступно, используем mock данные:', error.message);
+         return await fetchMockData();
+       }
+     }
+ 
+     async function fetchMockData() {
+       try {
+-const mockUrl = "/public/mock/search-" + encodeURIComponent(q) + ".json";
++        const mockUrl = `/public/mock/search-${encodeURIComponent(q)}.json`;
+         const res = await fetch(mockUrl);
+-        if (!res.ok) throw new Error(`Mock РЅРµ РЅР°Р№РґРµРЅ: ${res.status}`);
++        if (!res.ok) throw new Error(`Mock не найден: ${res.status}`);
+         return res.json();
+       } catch (error) {
+-        console.warn('Mock РґР°РЅРЅС‹Рµ РЅРµРґРѕСЃС‚СѓРїРЅС‹, РІРѕР·РІСЂР°С‰Р°РµРј РїСѓСЃС‚РѕР№ СЂРµР·СѓР»СЊС‚Р°С‚');
++        console.warn('Mock данные недоступны, возвращаем пустой результат');
+         return { items: [], total: 0, page: 1, pageSize: PAGE_SIZE };
+       }
+     }
+@@ -176,15 +157,15 @@ const mockUrl = "/public/mock/search-" + encodeURIComponent(q) + ".json";
+           <td class="px-4 md:px-6 py-3">
+             <div class="flex items-start gap-3">
+               <div class="min-w-0">
+-                <a href="deep-product-template.html?mpn=${encodeURIComponent(r.mpn)}" class="font-medium text-brand-700 hover:underline break-all">${r.mpn || 'вЂ”'}</a>
++                <a href="deep-product-template.html?mpn=${encodeURIComponent(r.mpn)}" class="font-medium text-brand-700 hover:underline break-all">${r.mpn || '—'}</a>
+               </div>
+             </div>
+           </td>
+           <td class="px-4 md:px-6 py-3">${availabilityCell(r.availability)}</td>
+           <td class="px-4 md:px-6 py-3"><span class="whitespace-pre-wrap">${priceText(r.pricing)}</span></td>
+           <td class="px-4 md:px-6 py-3"><div class="prose prose-sm max-w-none">${highlight(r.description || '', q)}</div></td>
+-          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.package || 'вЂ”'}</td>
+-          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.packaging || 'вЂ”'}</td>
++          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.package || '—'}</td>
++          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">${r.packaging || '—'}</td>
+         </tr>
+       `).join('');
+       $rows.insertAdjacentHTML('beforeend', html);
+@@ -193,7 +174,7 @@ const mockUrl = "/public/mock/search-" + encodeURIComponent(q) + ".json";
+     async function loadMore() {
+       $btn.disabled = true;
+       const prev = $btn.textContent;
+-      $btn.textContent = 'Р—Р°РіСЂСѓР¶Р°СЋвЂ¦';
++      $btn.textContent = 'Загружаю…';
+       try {
+         const data = await fetchPage();
+         const items = Array.isArray(data.items) ? data.items : [];
+@@ -201,12 +182,12 @@ const mockUrl = "/public/mock/search-" + encodeURIComponent(q) + ".json";
+         renderItems(items);
+         shown += items.length;
+         page += 1;
+-        $status.textContent = `РџРѕРєР°Р·Р°РЅРѕ ${shown} РёР· ${total}`;
++        $status.textContent = `Показано ${shown} из ${total}`;
+         if (shown >= total || items.length === 0) $btn.classList.add('hidden');
+         else $btn.classList.remove('hidden');
+       } catch (e) {
+         console.error(e);
+-        $status.textContent = 'РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РґР°РЅРЅС‹С…. РџСЂРѕРІРµСЂСЊ СЃРµСЂРІРµСЂ/РїСЂРѕРєСЃРё.';
++        $status.textContent = 'Ошибка загрузки данных. Проверьте сервер/прокси.';
+         $btn.classList.add('hidden');
+       } finally {
+         $btn.disabled = false;
+@@ -216,7 +197,7 @@ const mockUrl = "/public/mock/search-" + encodeURIComponent(q) + ".json";
+ 
+     (async function init(){
+       if (!q) {
+-        $status.textContent = 'РЈРєР°Р¶РёС‚Рµ РїР°СЂР°РјРµС‚СЂ q РІ URL.';
++        $status.textContent = 'Укажите параметр q в URL.';
+         return;
+       }
+       await loadMore();
+@@ -224,5 +205,4 @@ const mockUrl = "/public/mock/search-" + encodeURIComponent(q) + ".json";
+     })();
+   </script>
+ </body>
+-</html>
+-
++</html>
+\ No newline at end of file

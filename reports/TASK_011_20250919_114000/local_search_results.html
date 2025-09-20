@@ -1,0 +1,67 @@
+
+    <section class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-4 md:px-6 py-4 border-b flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <h1 class="text-lg md:text-xl font-semibold">Результаты поиска</h1>
+          <p class="text-sm text-gray-600">запрос: <span class="font-mono" id="q">транзистор</span></p>
+        </div>
+        <div class="text-sm text-gray-600" id="status">Показано 2 из 2</div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="table-grid min-w-full text-sm">
+          <thead>
+            <tr>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-72">Артикул (MPN)</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40">Наличие</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-80">Цена</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3">Описание</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-32 hidden sm:table-cell">Корпус</th>
+              <th class="text-left font-semibold px-4 md:px-6 py-3 w-40 hidden sm:table-cell">Упаковка</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+        <tr class="align-top hover:bg-gray-50">
+          <td class="px-4 md:px-6 py-3">
+            <div class="flex items-start gap-3">
+              <div class="min-w-0">
+                <a href="deep-product-template.html?mpn=2N3904" class="font-medium text-brand-700 hover:underline break-all">2N3904</a>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 md:px-6 py-3"><span class="inline-flex items-center gap-2">
+          <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+          В наличии: 1&nbsp;200
+        </span></td>
+          <td class="px-4 md:px-6 py-3"><span class="whitespace-pre-wrap">от $0.12 / 1 шт  •  от $0.08 / 100 шт</span></td>
+          <td class="px-4 md:px-6 py-3"><div class="prose prose-sm max-w-none">General purpose NPN</div></td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">TO-92</td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">Tape</td>
+        </tr>
+      
+        <tr class="align-top hover:bg-gray-50">
+          <td class="px-4 md:px-6 py-3">
+            <div class="flex items-start gap-3">
+              <div class="min-w-0">
+                <a href="deep-product-template.html?mpn=BC547" class="font-medium text-brand-700 hover:underline break-all">BC547</a>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 md:px-6 py-3"><span class="inline-flex items-center gap-2">
+          <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+          В наличии: 3&nbsp;000
+        </span></td>
+          <td class="px-4 md:px-6 py-3"><span class="whitespace-pre-wrap">от $0.10 / 1 шт  •  от $0.07 / 100 шт</span></td>
+          <td class="px-4 md:px-6 py-3"><div class="prose prose-sm max-w-none">Low noise NPN</div></td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">TO-92</td>
+          <td class="px-4 md:px-6 py-3 hidden sm:table-cell">Bulk</td>
+        </tr>
+      </tbody>
+        </table>
+      </div>
+
+      <div class="p-4 md:p-6 border-t flex items-center justify-center">
+        <button id="load-more" class="px-4 py-2 rounded-lg border text-sm hover:bg-gray-50 hidden">Показать ещё</button>
+      </div>
+    </section>
+  
