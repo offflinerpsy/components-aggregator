@@ -1,12 +1,24 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DEEP вЂў Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР°</title>
   <!-- Rendered client-side; data from Strapi (server). DO NOT TOUCH proxy/server configs. -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <script>
+  function makeMockUrl(q){
+    try{ if(location.protocol==='file:'){
+      return '../../public/mock/search-'+encodeURIComponent(q)+'.json';
+    }}catch(e){}
+    return '/public/mock/search-'+encodeURIComponent(q)+'.json';
+  }
+</script></script>
+  <script>
+  function makeMockUrl(q){
+    try{ if(location.protocol==='file:'){
+      return '../../public/mock/search-'+encodeURIComponent(q)+'.json';
+    }}catch(e){}
+    return '/public/mock/search-'+encodeURIComponent(q)+'.json';
+  }
+</script>
     tailwind.config = {
       theme: {
         extend: {
@@ -55,6 +67,13 @@
   </main>
 
   <script>
+  function makeMockUrl(q){
+    try{ if(location.protocol==='file:'){
+      return '../../public/mock/search-'+encodeURIComponent(q)+'.json';
+    }}catch(e){}
+    return '/public/mock/search-'+encodeURIComponent(q)+'.json';
+  }
+</script>
     // ==== РљРѕРЅС„РёРі API ====
     const API_BASE = ''; // РїСѓСЃС‚Рѕ = РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РїСѓС‚Рё /api/search
     const PAGE_SIZE = 20;
@@ -141,7 +160,7 @@
 
     async function fetchMockData() {
       try {
-        const mockUrl = `/public/mock/search-${encodeURIComponent(q)}.json`;
+const mockUrl = makeMockUrl(q);
         const res = await fetch(mockUrl);
         if (!res.ok) throw new Error(`Mock РЅРµ РЅР°Р№РґРµРЅ: ${res.status}`);
         return res.json();
@@ -206,5 +225,4 @@
   </script>
 </body>
 </html>
-
 
