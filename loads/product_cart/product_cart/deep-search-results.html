@@ -160,7 +160,7 @@
 
     async function fetchMockData() {
       try {
-const mockUrl = makeMockUrl(q);
+const mockUrl = "/public/mock/search-" + encodeURIComponent(q) + ".json";
         const res = await fetch(mockUrl);
         if (!res.ok) throw new Error(`Mock РЅРµ РЅР°Р№РґРµРЅ: ${res.status}`);
         return res.json();
