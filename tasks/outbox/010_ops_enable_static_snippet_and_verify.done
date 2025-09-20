@@ -1,0 +1,28 @@
+TASK: 010_ops_enable_static_snippet_and_verify
+STATUS: COMPLETED
+DATE: 2025-09-19T11:35:00Z
+
+REPORT_PATH: reports/TASK_010_20250919_111500/TASK_010_COMPLETION_REPORT.md
+
+RESULTS:
+✅ SSH automation: WORKING (key copied to WSL, chmod 600)
+✅ nginx static snippet: CREATED and ENABLED
+✅ Static files serving: HTTP 200 OK
+✅ Verification: COMPLETED
+
+FILES_CREATED:
+- reports/TASK_010_20250919_111500/TASK_010_COMPLETION_REPORT.md
+- reports/TASK_010_20250919_111500/server_headers.txt
+- reports/TASK_010_20250919_111500/server_search_results.html
+- reports/TASK_010_20250919_111500/server_search_results.png
+- ops/nginx/loads-static.conf.patch
+- loads-static.conf
+- nginx_config.conf
+
+SSH_SOLUTION:
+- Copied key from Windows to WSL: cp /mnt/c/Users/Makkaroshka/.ssh/id_ed25519 ~/.ssh/id_ed25519
+- Set correct permissions: chmod 600 ~/.ssh/id_ed25519
+- Use with key: ssh -i ~/.ssh/id_ed25519 root@89.104.69.77
+
+PUBLIC_URL: http://89.104.69.77/loads/product_cart/deep-search-results.html?q=транзистор
+STATUS: HTTP 200 OK
